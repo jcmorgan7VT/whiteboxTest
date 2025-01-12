@@ -8,44 +8,32 @@
 #
 
 library(shiny)
-
-# Define UI for application that draws a histogram
+library(shiny)
+library(whitebox)
+library(terra)
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
+  
+  titlePanel(paste("WhiteboxTools-Shiny Test", getwd())),
+  
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("threshold", "Threshold:", min = 1, max = 40, value = 8),
+      checkboxInput("compress", "Compress Rasters?")
+    ),
+    mainPanel(
+      plotOutput("slopePlot")
     )
+  )
 )
-
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  # setwd("~")
+  # wbt_wd("")
+  output$slopePlot <- renderPlot({
+    # generate threshold slope map based on input$threshold from ui.R
+    x <- wbt_slope(sample_dem_data(destfile = "~/input.tif"), "~/output.tif")
+    # , compress_rasters = input$compress)
+    terra::plot(terra::rast("~/output.tif") > input$threshold)
+    unlink("~/output.tif")
+  })
 }
-
-# Run the application 
 shinyApp(ui = ui, server = server)
