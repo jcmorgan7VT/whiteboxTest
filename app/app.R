@@ -8,8 +8,8 @@
 #
 
 library(shiny)
-library(shiny)
 library(whitebox)
+whitebox::install_whitebox()
 library(terra)
 ui <- fluidPage(
   
