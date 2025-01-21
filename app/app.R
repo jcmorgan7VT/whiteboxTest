@@ -6,11 +6,13 @@
 #
 #    https://shiny.posit.co/
 #
-
-library(shiny)
-library(whitebox)
+library(pacman)
+p_load(shiny, whitebox)
 whitebox::install_whitebox()
-library(terra)
+#webr::install("whitebox")
+#library(whitebox)
+
+
 ui <- fluidPage(
   
   titlePanel(paste("WhiteboxTools-Shiny Test", getwd())),
